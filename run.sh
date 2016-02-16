@@ -7,7 +7,7 @@ insert()
 		read choice 
 		if [ $choice = 'y' ]
 		then
-			insmod modules/lkm.ko
+			sudo insmod modules/lkm.ko
 			lsmod | grep lkm
 			read
 			dmesg
@@ -27,7 +27,7 @@ remove()
 	then
 		lsmod | grep lkm
 		read
-		rmmod lkm
+		sudo rmmod lkm
 		dmesg
 		read
 		make clean
@@ -67,12 +67,30 @@ edit()
 		read
 		git add '*.c'
 		git add '*.h'
+		git add 'Makefile'
+		git add '*.sh'
 		read
 	fi
 }
 
+online() 
+{
+	echo "Do you want to commit online? [y/n]"
+	read choice
+	if [ $choice = 'y' ]
+	then
+		git push -u origin master
+		echo "Check: https://github.com/amiteshunique/char_driver"
+	fi
+	
+}
 
 echo "Starting the script:"
+if [ $1 = 'o'  ]
+then
+	online
+	exit
+fi
 echo "Making the module now.."
 insert
 remove 
