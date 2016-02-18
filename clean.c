@@ -1,6 +1,8 @@
 #include "header.h"
 #include "declarations.h"
 
+//int majorno, nod;
+//dev_t dev;
 
 static void __exit exit_function(void) {
 	printk(KERN_INFO "clean.c : Unregistering char dev now for majorno(%d) for nod(%d) devices\n", majorno, nod);

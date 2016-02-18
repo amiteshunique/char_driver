@@ -10,3 +10,5 @@ struct scull_dev {
    unsigned long size;       /* amount of data stored here */
    struct cdev cdev;         /* Char device structure              */
 };
+
+struct scull_dev *scull_devices;
