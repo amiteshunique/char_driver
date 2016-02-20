@@ -1,6 +1,7 @@
 #include "header.h"
 #include "scull.h"
 #include "declarations.h"
+#include "file_ops.h"
 
 int devno;		/* Device number passed as parameter */
 int nod;		/* Number of devices */
@@ -12,7 +13,10 @@ int quantum=QUANTUM, qset=QSET;
 unsigned long size=SIZE;
 
 static int __init init_function(void) {
+
 	int ret,i;
+	struct cdev cdev_entry;
+	dev_t dev_entry;		/* dev_entry - used for making entry for each device */
 
 	printk("Hello Kernel.. Here I am.. \n");
 
@@ -41,8 +45,10 @@ static int __init init_function(void) {
 			printk("init.c: Successfully registered the chrdev region. majorno(%d) minorno(%d) \n", majorno, minorno);
 		}
 	}
-
 	/* Registering a char device - ends  */
+
+
+	/* Scull device creation - starts */
 	scull_devices = kmalloc(nod * sizeof(struct scull_dev), GFP_KERNEL);
 	memset(scull_devices, 0, nod * sizeof(struct scull_dev));
 
@@ -52,24 +58,35 @@ static int __init init_function(void) {
 		scull_devices[i].qset = qset;
 		scull_devices[i].size = size;
 	//	scull_devices[i].cdev = ;
+		
+		/* cdev operations - start */
+		cdev_init(&cdev_entry, &fops);
+		cdev_entry.owner = THIS_MODULE;
+		cdev_entry.ops = &fops;
+		
+		dev_entry = MKDEV(majorno, minorno + i);
+		ret = cdev_add(&cdev_entry, dev_entry, 1 );
+		if(ret) {
+			printk("Problem with cdev_add.\n");	
+			goto fail;
+		} else
+			printk("Successfully added the cdev\n");
+		scull_devices[i].cdev = cdev_entry;
+		/* cdev operations - end */
 
 	}
 
-	/* Scull device creation - starts */
-	
-	
-
-
-
-
-
-
 	/* Scull device creation - ends */
 
-
+	
+	for(i=0; i < nod; i++) {
+		printk("Scull device: majorno(%d) minorno(%d)", MAJOR(scull_devices[i].cdev.dev) , MINOR(scull_devices[i].cdev.dev)   );
+	}
 
 
 	return 0;
+fail:
+	return -1;
 }
 
 module_init(init_function);
