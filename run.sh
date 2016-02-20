@@ -7,7 +7,7 @@ insert()
 		read choice 
 		if [ $choice = 'y' ]
 		then
-			sudo insmod modules/lkm.ko
+			sudo insmod modules/lkm.ko nod=$1
 			lsmod | grep lkm
 			read
 			dmesg
@@ -92,7 +92,12 @@ then
 	exit
 fi
 echo "Making the module now.."
-insert
+if [ $1 = '']
+then 
+	insert 1
+else
+	insert $1
+fi
 remove 
 commit
 edit

@@ -12,13 +12,15 @@ extern struct scull_dev *scull_devices; 	/* Decalered in scull.h */
 int quantum=QUANTUM, qset=QSET;
 unsigned long size=SIZE;
 
+module_param(nod, int, S_IRUGO);
+
 static int __init init_function(void) {
 
 	int ret,i;
 	struct cdev cdev_entry;
 	dev_t dev_entry;		/* dev_entry - used for making entry for each device */
 
-	printk("Hello Kernel.. Here I am.. \n");
+	printk("%s: Hello Kernel.. Here I am.. \n", __FILE__);
 
 	/* If number of devices is un-declared then, take default as 1 device*/
 	if(nod <= 0)
@@ -28,21 +30,21 @@ static int __init init_function(void) {
 	if(devno) {
 		ret = register_chrdev_region(devno, nod, DEVNAME);
 		if (ret) 
-			printk("init.c: Problem with register_chrdev_region.\n");
+			printk("%s: Problem with register_chrdev_region.\n", __FILE__);
 		else {
 			dev = MKDEV(devno, minorno);
 			majorno = MAJOR(dev);
 			minorno = MINOR(dev);
-			printk("init.c: Successfully registered the chrdev region. majorno(%d) minorno(%d) \n", majorno, minorno);
+			printk("%s: Successfully registered the chrdev region. majorno(%d) minorno(%d) \n", __FILE__, majorno, minorno);
 		}
 	} else {
 		ret = alloc_chrdev_region(&dev, minorno, nod, DEVNAME );
 		if (ret) 
-			printk("init.c: Problem with alloc_chrdev_region.\n");
+			printk("%s: Problem with alloc_chrdev_region.\n", __FILE__);
 		else {
 			majorno = MAJOR(dev);
 			minorno = MINOR(dev);
-			printk("init.c: Successfully registered the chrdev region. majorno(%d) minorno(%d) \n", majorno, minorno);
+			printk("%s: Successfully registered the chrdev region. majorno(%d) minorno(%d) \n", __FILE__, majorno, minorno);
 		}
 	}
 	/* Registering a char device - ends  */
@@ -57,7 +59,6 @@ static int __init init_function(void) {
 		scull_devices[i].quantum = quantum;
 		scull_devices[i].qset = qset;
 		scull_devices[i].size = size;
-	//	scull_devices[i].cdev = ;
 		
 		/* cdev operations - start */
 		cdev_init(&cdev_entry, &fops);
@@ -67,10 +68,10 @@ static int __init init_function(void) {
 		dev_entry = MKDEV(majorno, minorno + i);
 		ret = cdev_add(&cdev_entry, dev_entry, 1 );
 		if(ret) {
-			printk("Problem with cdev_add.\n");	
+			printk("%s: Problem with cdev_add.\n", __FILE__);	
 			goto fail;
 		} else
-			printk("Successfully added the cdev\n");
+			printk("%s: Successfully added the cdev\n", __FILE__);
 		scull_devices[i].cdev = cdev_entry;
 		/* cdev operations - end */
 
@@ -80,7 +81,7 @@ static int __init init_function(void) {
 
 	
 	for(i=0; i < nod; i++) {
-		printk("Scull device: majorno(%d) minorno(%d)", MAJOR(scull_devices[i].cdev.dev) , MINOR(scull_devices[i].cdev.dev)   );
+		printk("%s: Scull device: majorno(%d) minorno(%d)\n", __FILE__, MAJOR(scull_devices[i].cdev.dev) , MINOR(scull_devices[i].cdev.dev)   );
 	}
 
 
