@@ -1,5 +1,5 @@
-obj-m += init.o
-obj-m += clean.o
+#obj-m += init.o
+#obj-m += clean.o
 obj-m += lkm.o
 lkm-objs := init.o clean.o
 

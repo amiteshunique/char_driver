@@ -15,11 +15,11 @@ unsigned long size=SIZE;
 module_param(nod, int, S_IRUGO);
 
 static int __init init_function(void) {
-
+	
 	int ret,i;
 	struct cdev cdev_entry;
 	dev_t dev_entry;		/* dev_entry - used for making entry for each device */
-
+	dev=0;
 	printk("%s: Hello Kernel.. Here I am.. \n", __FILE__);
 
 	/* If number of devices is un-declared then, take default as 1 device*/
@@ -90,4 +90,5 @@ fail:
 	return -1;
 }
 
+MODULE_LICENSE("GPL"); 
 module_init(init_function);
