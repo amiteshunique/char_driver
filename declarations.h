@@ -5,6 +5,9 @@ extern int majorno, minorno;
 extern dev_t dev;
 
 
+#ifndef	DEBUG
+#define DEBUG 1 
+#endif
 
 #ifndef	DEVNAME
 #define DEVNAME "scull_device"

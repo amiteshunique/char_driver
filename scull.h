@@ -11,4 +11,5 @@ struct scull_dev {
    struct cdev cdev;         /* Char device structure              */
 };
 
-struct scull_dev *scull_devices;
+extern struct scull_dev *scull_devices;
+extern void scull_trim(struct scull_dev*);

@@ -12,6 +12,12 @@ insert()
 			read
 			dmesg
 			read
+			echo "Enter majorno:"
+			read m
+			sudo mknod /dev/scull_char_dev c $m 0
+			echo "ls -l /dev/scull_char_dev"
+			sudo ls -l /dev/scull_char_dev
+			read
 		fi
 	else
 		echo "make failed.. please check for build errors"
@@ -31,6 +37,10 @@ remove()
 		dmesg
 		read
 		make clean
+		read
+		echo "Removing /dev/scull_char_dev.."
+		sudo rm /dev/scull_char_dev
+		read
 	fi
 }
 
@@ -85,6 +95,17 @@ online()
 	
 }
 
+writer() 
+{
+	if [ cc -o writer writer.c ]
+	then 
+		echo "Compiation of writer was success"
+		sudo ./writer
+	else
+		echo "Compiation of writer had problems"
+	fi
+	
+}
 echo "Starting the script:"
 if [ $1 = 'o'  ]
 then
@@ -98,6 +119,11 @@ then
 else
 	insert $1
 fi
+cc -o writer writer.c
+sudo ./writer
+read
+dmesg
+read
 remove 
 commit
 edit
