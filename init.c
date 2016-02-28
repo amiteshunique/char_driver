@@ -56,7 +56,7 @@ static int __init init_function(void) {
 
 	for(i=0; i < nod; i++) {
 		scull_devices[i].data = kmalloc(sizeof(struct scull_qset), GFP_KERNEL);
-		memset(scull_devices[i].data, 0, sizeof(struct scull_dev));
+		memset(scull_devices[i].data, 0, sizeof(struct scull_qset));
 		scull_devices[i].quantum = quantum;
 		scull_devices[i].qset = qset;
 		scull_devices[i].size = size;

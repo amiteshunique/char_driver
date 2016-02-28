@@ -3,8 +3,9 @@
 #include <fcntl.h>
 int main() {
 	int ret, fd;
-
-	fd = open("/dev/scull_char_dev", O_WRONLY);
+	char *msg = "Emb";
+	char *device_path = "/dev/scull_char_dev";
+	fd = open(device_path, O_WRONLY);
 
 	if(fd > 0)
 	{
@@ -14,6 +15,15 @@ int main() {
 		goto OUT;
 	}
 
+
+	ret = write(fd, msg, 4 );
+	if(ret) {
+		printf("Wrote %d bytes to %s\n", ret, device_path);
+	
+	} else {
+		printf("Wrote failed to write with return code:%i, for path:%s\n", ret, device_path);
+		goto OUT;
+	}
 	close(fd);
 	return 0;
 OUT:
