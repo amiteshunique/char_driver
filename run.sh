@@ -12,6 +12,12 @@ insert()
 			read
 			dmesg
 			read
+			echo "Enter majorno:"
+			read m
+			sudo mknod /dev/scull_char_dev c $m 0
+			echo "ls -l /dev/scull_char_dev"
+			sudo ls -l /dev/scull_char_dev
+			read
 		fi
 	else
 		echo "make failed.. please check for build errors"
@@ -29,8 +35,10 @@ remove()
 		read
 		sudo rmmod lkm
 		dmesg
-		read
+		echo "Cleaning & Removing now..."
 		make clean
+		echo "Removing /dev/scull_char_dev.."
+		sudo rm /dev/scull_char_dev
 	fi
 }
 
@@ -79,12 +87,25 @@ online()
 	read choice
 	if [ $choice = 'y' ]
 	then
-		git push -u origin master
+		echo "master / dev"
+		read branch
+		git push -u origin $branch
 		echo "Check: https://github.com/amiteshunique/char_driver"
 	fi
 	
 }
 
+writer() 
+{
+	if [ cc -o writer writer.c ]
+	then 
+		echo "Compiation of writer was success"
+		sudo ./writer
+	else
+		echo "Compiation of writer had problems"
+	fi
+	
+}
 echo "Starting the script:"
 if [ $1 = 'o'  ]
 then
@@ -98,9 +119,19 @@ then
 else
 	insert $1
 fi
+cc -o writer writer.c
+sudo ./writer
+read
+dmesg
+read
+cc -o reader reader.c
+sudo ./reader
+read
+dmesg
+read
 remove 
-commit
-edit
+#commit
+#edit
 
 
 

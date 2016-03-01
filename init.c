@@ -8,7 +8,7 @@ int nod;		/* Number of devices */
 int majorno, minorno;	/* Major and minor numbers*/
 dev_t dev;		/* dev -> 12bits for majorno , 20bits for minorno */
 
-extern struct scull_dev *scull_devices; 	/* Decalered in scull.h */
+struct scull_dev *scull_devices; 	/* Decalered in scull.h */
 int quantum=QUANTUM, qset=QSET;
 unsigned long size=SIZE;
 
@@ -17,7 +17,7 @@ module_param(nod, int, S_IRUGO);
 static int __init init_function(void) {
 	
 	int ret,i;
-	struct cdev cdev_entry;
+	//struct cdev cdev_entry;
 	dev_t dev_entry;		/* dev_entry - used for making entry for each device */
 	dev=0;
 	printk("%s: Hello Kernel.. Here I am.. \n", __FILE__);
@@ -56,23 +56,23 @@ static int __init init_function(void) {
 
 	for(i=0; i < nod; i++) {
 		scull_devices[i].data = kmalloc(sizeof(struct scull_qset), GFP_KERNEL);
+		memset(scull_devices[i].data, 0, sizeof(struct scull_qset));
 		scull_devices[i].quantum = quantum;
 		scull_devices[i].qset = qset;
 		scull_devices[i].size = size;
 		
 		/* cdev operations - start */
-		cdev_init(&cdev_entry, &fops);
-		cdev_entry.owner = THIS_MODULE;
-		cdev_entry.ops = &fops;
+		cdev_init(&scull_devices[i].cdev, &fops);
+		scull_devices[i].cdev.owner = THIS_MODULE;
+		scull_devices[i].cdev.ops = &fops;
 		
 		dev_entry = MKDEV(majorno, minorno + i);
-		ret = cdev_add(&cdev_entry, dev_entry, 1 );
+		ret = cdev_add(&scull_devices[i].cdev, dev_entry, 1 );
 		if(ret) {
 			printk("%s: Problem with cdev_add.\n", __FILE__);	
 			goto fail;
 		} else
 			printk("%s: Successfully added the cdev\n", __FILE__);
-		scull_devices[i].cdev = cdev_entry;
 		/* cdev operations - end */
 
 	}
@@ -92,3 +92,5 @@ fail:
 
 MODULE_LICENSE("GPL"); 
 module_init(init_function);
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Amitesh Anand");

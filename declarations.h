@@ -5,17 +5,20 @@ extern int majorno, minorno;
 extern dev_t dev;
 
 
+#ifndef	DEBUG
+#define DEBUG 1 
+#endif
 
 #ifndef	DEVNAME
 #define DEVNAME "scull_device"
 #endif
 
 #ifndef	QUANTUM
-#define QUANTUM 4000
+#define QUANTUM 4
 #endif
 
 #ifndef	QSET
-#define QSET 1000
+#define QSET 16
 #endif
 
 #ifndef	SIZE
