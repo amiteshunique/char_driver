@@ -14,11 +14,11 @@ extern dev_t dev;
 #endif
 
 #ifndef	QUANTUM
-#define QUANTUM 4000
+#define QUANTUM 4
 #endif
 
 #ifndef	QSET
-#define QSET 1000
+#define QSET 16
 #endif
 
 #ifndef	SIZE

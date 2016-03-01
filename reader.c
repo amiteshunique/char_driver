@@ -2,11 +2,14 @@
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
+
+#define MSG_SIZE 1024
+
 int main() {
 	int ret, fd;
-	char *msg = "ABCDEFGHIJKLM";
+	char msg[MSG_SIZE];
 	char *device_path = "/dev/scull_char_dev";
-	fd = open(device_path, O_WRONLY);
+	fd = open(device_path, O_RDONLY);
 
 	if(fd > 0)
 	{
@@ -17,12 +20,12 @@ int main() {
 	}
 
 
-	ret = write(fd, msg, strlen(msg) );
+	ret = read(fd, msg, MSG_SIZE );
 	if(ret) {
-		printf("Wrote %d bytes to %s\n", ret, device_path);
+		printf("Read %d bytes to %s\n", ret, device_path);
 	
 	} else {
-		printf("Wrote failed to write with return code:%i, for path:%s\n", ret, device_path);
+		printf("Read failed with return code:%i, for path:%s\n", ret, device_path);
 		goto OUT;
 	}
 	close(fd);
