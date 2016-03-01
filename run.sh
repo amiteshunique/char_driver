@@ -35,12 +35,10 @@ remove()
 		read
 		sudo rmmod lkm
 		dmesg
-		read
+		echo "Cleaning & Removing now..."
 		make clean
-		read
 		echo "Removing /dev/scull_char_dev.."
 		sudo rm /dev/scull_char_dev
-		read
 	fi
 }
 
@@ -89,7 +87,9 @@ online()
 	read choice
 	if [ $choice = 'y' ]
 	then
-		git push -u origin master
+		echo "master / dev"
+		read branch
+		git push -u origin $branch
 		echo "Check: https://github.com/amiteshunique/char_driver"
 	fi
 	
@@ -124,9 +124,14 @@ sudo ./writer
 read
 dmesg
 read
+cc -o reader reader.c
+sudo ./reader
+read
+dmesg
+read
 remove 
-commit
-edit
+#commit
+#edit
 
 
 
