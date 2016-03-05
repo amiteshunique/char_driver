@@ -18,9 +18,9 @@ extern dev_t dev;
 #endif
 
 #ifndef	QSET
-#define QSET 16
+#define QSET 2
 #endif
 
 #ifndef	SIZE
-#define SIZE 4000
+#define SIZE 8
 #endif

@@ -4,10 +4,19 @@
 #include <fcntl.h>
 int main() {
 	int ret, fd;
-	char *msg = "ABCDEFGHIJKLM";
+	int noc;	// No. of characters to be written.
+	int len;
+	char *msg = "123456789A123456789B123456789C123"; 
 	char *device_path = "/dev/scull_char_dev";
 	fd = open(device_path, O_WRONLY);
+	
+	printf("Please enter the number of characters to be written: ");
+	scanf("%d",&noc);
 
+	if(noc > len || noc <0)
+		len = noc;
+	else
+		len = strlen(msg);
 	if(fd > 0)
 	{
 		printf("/dev/scull_char_dev opened successfully; fd= %d\n",fd);
@@ -17,7 +26,7 @@ int main() {
 	}
 
 
-	ret = write(fd, msg, strlen(msg) );
+	ret = write(fd, msg, len );
 	if(ret) {
 		printf("Wrote %d bytes to %s\n", ret, device_path);
 	

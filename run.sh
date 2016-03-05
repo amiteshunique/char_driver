@@ -31,6 +31,7 @@ remove()
 	read choice 
 	if [ $choice = 'y' ]
 	then
+		echo "Output of lsmod:"
 		lsmod | grep lkm
 		read
 		sudo rmmod lkm
@@ -110,6 +111,18 @@ echo "Starting the script:"
 if [ $1 = 'o'  ]
 then
 	online
+	exit
+fi
+echo "Starting the script:"
+if [ $1 = 'r'  ]
+then
+	remove
+	exit
+fi
+echo "Starting the script:"
+if [ $1 = 'i'  ]
+then
+	insert
 	exit
 fi
 echo "Making the module now.."

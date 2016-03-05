@@ -5,10 +5,10 @@ struct scull_qset {
 
 struct scull_dev {
    struct scull_qset *data;  /* Pointer to first quantum set */
-   int quantum;              /* the current quantum size */
-   int qset;                 /* the current array size */
+   int quantum;              /* number of quantums(each quantum is capable of storing 1byte) in each entry of qset-array */
+   int qset;                 /* total no of qsets in the device */
    unsigned long size;       /* amount of data stored here */
-   struct cdev cdev;         /* Char device structure              */
+   struct cdev cdev;         /* Char device structure  */
 };
 
 extern struct scull_dev *scull_devices;

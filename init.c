@@ -55,8 +55,13 @@ static int __init init_function(void) {
 	memset(scull_devices, 0, nod * sizeof(struct scull_dev));
 
 	for(i=0; i < nod; i++) {
+		/* 
+		 * Qset Allocation required only if we are not creating qsets during other operations.
+		 * As we do so already during write, therefore its redundant to do here.
+		 *
 		scull_devices[i].data = kmalloc(sizeof(struct scull_qset), GFP_KERNEL);
 		memset(scull_devices[i].data, 0, sizeof(struct scull_qset));
+		*/
 		scull_devices[i].quantum = quantum;
 		scull_devices[i].qset = qset;
 		scull_devices[i].size = size;
