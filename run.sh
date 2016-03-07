@@ -107,20 +107,25 @@ writer()
 	fi
 	
 }
+option=$1
+if [ $1 = '' ] 
+then 
+	$1 = 1	
+fi
 echo "Starting the script:"
-if [ $1 = 'o'  ]
+if [ option = 'o'  ]
 then
 	online
 	exit
 fi
 echo "Starting the script:"
-if [ $1 = 'r'  ]
+if [ option = 'r'  ]
 then
 	remove
 	exit
 fi
 echo "Starting the script:"
-if [ $1 = 'i'  ]
+if [ option = 'i'  ]
 then
 	insert
 	exit
