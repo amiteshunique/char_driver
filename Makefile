@@ -1,7 +1,7 @@
 #obj-m += init.o
 #obj-m += clean.o
 obj-m += lkm.o
-lkm-objs := init.o clean.o releasedev.o opendev.o sculltrim.o writedev.o readdev.o
+lkm-objs := init.o clean.o releasedev.o opendev.o sculltrim.o writedev.o readdev.o lseekdev.o
 
 all:
 	make -C /lib/modules/$(shell uname -r)/build M=$(PWD) modules

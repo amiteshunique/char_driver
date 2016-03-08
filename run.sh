@@ -113,19 +113,19 @@ then
 	$1 = 1	
 fi
 echo "Starting the script:"
-if [ option = 'o'  ]
+if [ $1 = 'o'  ]
 then
 	online
 	exit
 fi
 echo "Starting the script:"
-if [ option = 'r'  ]
+if [ $1 = 'r'  ]
 then
 	remove
 	exit
 fi
 echo "Starting the script:"
-if [ option = 'i'  ]
+if [ $1 = 'i'  ]
 then
 	insert
 	exit

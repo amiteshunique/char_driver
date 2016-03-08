@@ -6,7 +6,7 @@ int main() {
 	int ret, fd;
 	int noc;	// No. of characters to be written.
 	int len;
-	char *msg = "123456789A123456789B123456789C123"; 
+	char *msg = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"; 
 	char *device_path = "/dev/scull_char_dev";
 	fd = open(device_path, O_WRONLY);
 	

@@ -28,9 +28,12 @@ ssize_t writedev(struct file *filep, const char __user *buf, size_t len, loff_t 
 	qset_count = 0;
 	ncmw = len;
 	noq = (ncmw / ldev->quantum) + (ncmw % ldev->quantum ? 1 : 0 );
+	printk(KERN_ERR "%s: noq= %d :  %s()\n", __FILE__,noq, __FUNCTION__);
 	qset_count = ( ncmw / (ldev->quantum * ldev->qset) ) + (ncmw % (ldev->quantum * ldev->qset) ? 1 : 0);
-	lqset = NULL;
+	lqset = ldev->data;
 	firstqset = NULL;
+
+	printk(KERN_INFO "%s: filep->f_pos=%d  & ppos=%d  %s()\n", __FILE__,(int)filep->f_pos,(int) *ppos, __FUNCTION__);
 
 	/* Allocation of QSETS & QSET ARRAY */
 	for(l=0 ; l< qset_count; l++) {
@@ -39,9 +42,9 @@ ssize_t writedev(struct file *filep, const char __user *buf, size_t len, loff_t 
 			/* Allocation of First Qset of this Device..  */
 			/*qset allocation*/
 			ldev->data = (struct scull_qset*) kmalloc( sizeof(struct scull_qset), GFP_KERNEL );
-			if(!ldev->data)
+			if( ldev->data == NULL)
 				printk(KERN_ERR "%s: memory allocation for ldev->data (ie, qset) failed %s()\n", __FILE__, __FUNCTION__);
-			memset(ldev->data, 0, sizeof(struct scull_qset) );
+			memset(ldev->data, '\0', sizeof(struct scull_qset) );
 			
 			firstqset = ldev->data;
 	
@@ -49,7 +52,7 @@ ssize_t writedev(struct file *filep, const char __user *buf, size_t len, loff_t 
 			ldev->data->data = (void **) kmalloc( ldev->qset * sizeof(char*), GFP_KERNEL);
 			if(!ldev->data->data)
 				printk(KERN_ERR "%s: memory allocation for ldev->data->data (ie qset array) failed %s()\n", __FILE__, __FUNCTION__);
-			memset(ldev->data->data, 0, ldev->qset * sizeof(char*)); 
+			memset(ldev->data->data, '\0', ldev->qset * sizeof(char*)); 
 		
 			/* Now localqset should point to the firstqset should & is ready to create new links of qset*/
 			lqset = ldev->data; 
@@ -59,17 +62,17 @@ ssize_t writedev(struct file *filep, const char __user *buf, size_t len, loff_t 
 
 			/*qset allocation*/
 			lqset->next = (struct scull_qset*) kmalloc( sizeof(struct scull_qset), GFP_KERNEL );
-			if( lqset->next != NULL )
+			if( lqset->next == NULL )
 				printk(KERN_ERR "%s: memory allocation for lqset->next (ie, qset) failed %s()\n", __FILE__, __FUNCTION__);
 			else
-				printk(KERN_ERR "%s: memory allocation for lqset->next (ie, qset) was success: %s()\n", __FILE__, __FUNCTION__);
-			memset(lqset->next, 0, sizeof(struct scull_qset) );
+				printk(KERN_INFO "%s: memory allocation for lqset->next (ie, qset) was success: %s()\n", __FILE__, __FUNCTION__);
+			memset(lqset->next,'\0', sizeof(struct scull_qset) );
 		
 			/*qset array allocation*/
 			lqset->next->data = (void **) kmalloc( ldev->qset * sizeof(char*), GFP_KERNEL);
 			if(!lqset->next->data)
 				printk(KERN_ERR "%s: memory allocation for ldev->data->data (ie qset array) failed %s()\n", __FILE__, __FUNCTION__);
-			memset(lqset->next->data, 0, ldev->qset * sizeof(char*)); 
+			memset(lqset->next->data, '\0', ldev->qset * sizeof(char*)); 
 
 			/* Now lqset stands at the last available qset */
 			lqset = lqset->next;
@@ -86,7 +89,7 @@ ssize_t writedev(struct file *filep, const char __user *buf, size_t len, loff_t 
 		lqset->data[i] = (void **) kmalloc(ldev->quantum * sizeof(char) , GFP_KERNEL);
 		if(!lqset->data[i])
 			printk(KERN_ERR "%s: memory allocation for ldev->data->data[] (ie quantum) failed %s()\n", __FILE__, __FUNCTION__);	
-		memset(lqset->data[i], 0, ldev->quantum * sizeof(char));
+		memset(lqset->data[i], '\0', ldev->quantum * sizeof(char));
 
 		if(ncmw > ldev->quantum)
 			nctw = ldev->quantum;
@@ -107,7 +110,7 @@ ssize_t writedev(struct file *filep, const char __user *buf, size_t len, loff_t 
 
 		i++;
 
-		if( i == ldev->qset ) {
+		if( i == ldev->qset && ncmw!=0 ) {
 			if( !(lqset->next) ) {
 				printk(KERN_ERR "%s: Problem with lqset->next for i=%d in %s() \n", __FILE__, i, __FUNCTION__);
 				goto OUT;
@@ -120,6 +123,10 @@ ssize_t writedev(struct file *filep, const char __user *buf, size_t len, loff_t 
 
 	/* Updating no of char written successfully in device */	
 	ldev->size = ncsw;
+	
+	filep->f_pos = ncsw;
+	*ppos = ncsw;
+	printk(KERN_INFO "%s: filep->f_pos=%d  & ppos=%d  %s()\n", __FILE__,(int)filep->f_pos,(int) *ppos, __FUNCTION__);
 
 	printk(KERN_INFO "%s: In end of function %s() \n", __FILE__, __FUNCTION__);
 	return ncsw;
