@@ -14,7 +14,7 @@ int main() {
 	fd = open(device_path, O_RDONLY);
 
 RETRY:
-	while(c != 2) {
+	while(c != 1) {
 		printf("Please enter the no of characters to be read:");
 		scanf("%d", &msg_size);
 		printf("Please enter the offset for reading:");

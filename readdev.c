@@ -61,16 +61,27 @@ ssize_t readdev(struct file *filep, char __user *buf, size_t len, loff_t *ppos) 
 	}
 
 	start = lqset->data[off_q_arr] + off_quantum;
+	ncsr = 0;
 	i = off_q_arr;
 	printk(KERN_INFO "%s: start=%c, off_qset=%d, off_q_arr=%d, off_quantum=%d,  %s() \n", __FILE__, *start, (int)off_qset, (int)off_q_arr, (int)off_quantum, __FUNCTION__);
 	
-	for(l=0; l<noq; l++) {
+	while(ncmr > 0) {
 		if(ncmr > ldev->quantum)
 			nctr = ldev->quantum;
 		else 	
 			nctr = ncmr;
 
-		cud_not_copy = copy_to_user(buf+ncsr, start, nctr-off_quantum);
+		if(nctr >= ldev->quantum - off_quantum ) {
+			nctr = ldev->quantum - off_quantum;
+		} else {
+			nctr = nctr - off_quantum;
+		}
+			
+		printk(KERN_INFO "%s: ncsr=%d, nctr=%d, ncmr=%d  %s() \n", __FILE__, (int)ncsr, (int)nctr, (int)ncmr, __FUNCTION__);
+
+		cud_not_copy = copy_to_user(buf+ncsr, start, nctr);
+		
+		printk(KERN_INFO "Start: %.4s \n",start );
 		if(cud_not_copy == 0) {
 			printk(KERN_INFO "%s: Read %ld bytes successfully <%s>in function %s() \n", __FILE__, nctr -off_quantum -cud_not_copy, buf, __FUNCTION__);
 		} else
