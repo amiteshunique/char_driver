@@ -66,6 +66,21 @@ ssize_t readdev(struct file *filep, char __user *buf, size_t len, loff_t *ppos) 
 	printk(KERN_INFO "%s: start=%c, off_qset=%d, off_q_arr=%d, off_quantum=%d,  %s() \n", __FILE__, *start, (int)off_qset, (int)off_q_arr, (int)off_quantum, __FUNCTION__);
 	
 	while(ncmr > 0) {
+		
+		if(ncmr > ldev->quantum) {
+			nctr = ldev->quantum;
+			if( nctr >= ldev->quantum - off_quantum ) {
+				nctr = nctr - off_quantum;
+			}
+
+		} else {
+			nctr = ncmr;
+			if( nctr >= ldev->quantum - off_quantum )
+				nctr= ldev->quantum - off_quantum;
+			
+		}
+	
+		/*
 		if(ncmr > ldev->quantum)
 			nctr = ldev->quantum;
 		else 	
@@ -76,20 +91,22 @@ ssize_t readdev(struct file *filep, char __user *buf, size_t len, loff_t *ppos) 
 		} else {
 			nctr = nctr - off_quantum;
 		}
-			
+		*/
+		
+	
 		printk(KERN_INFO "%s: ncsr=%d, nctr=%d, ncmr=%d  %s() \n", __FILE__, (int)ncsr, (int)nctr, (int)ncmr, __FUNCTION__);
 
 		cud_not_copy = copy_to_user(buf+ncsr, start, nctr);
 		
 		printk(KERN_INFO "Start: %.4s \n",start );
 		if(cud_not_copy == 0) {
-			printk(KERN_INFO "%s: Read %ld bytes successfully <%s>in function %s() \n", __FILE__, nctr -off_quantum -cud_not_copy, buf, __FUNCTION__);
+			printk(KERN_INFO "%s: Read %ld bytes successfully <%s>in function %s() \n", __FILE__, nctr-cud_not_copy, buf, __FUNCTION__);
 		} else
 			printk(KERN_INFO "%s: Partial Read %ld bytes(out of %ld) successfully <%s>in function %s() \n", __FILE__, nctr-cud_not_copy, nctr,buf, __FUNCTION__);
 		
 		printk(KERN_INFO "%s: ncmr=%d\n", __FILE__, (int)ncmr);
-		ncsr = ncsr + (nctr -off_quantum - cud_not_copy);
-		ncmr = ncmr - (nctr -off_quantum - cud_not_copy);
+		ncsr = ncsr + (nctr - cud_not_copy);
+		ncmr = ncmr - (nctr - cud_not_copy);
 		off_quantum = 0;
 		i++;
 

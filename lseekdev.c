@@ -41,7 +41,7 @@ loff_t lseekdev(struct file *filep, loff_t off, int whence) {
 			
 	}
 
-	if(newpos < 0 || newpos > ldev->size) 
+	if(newpos < 0 || newpos >= ldev->size) 
 		goto OUT;
 	else
 		filep->f_pos = newpos;

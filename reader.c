@@ -31,14 +31,23 @@ RETRY:
 			goto OUT;
 		}
 	
-		lseek(fd, offset, SEEK_SET);
+		ret = lseek(fd, offset, SEEK_END);
+	
+		if(ret < 0)
+		{
+			printf("Problem with lseek: ret=%d \n",ret);
+			goto OUT;
+		}
+
 		ret = read(fd, msg, msg_size );
 	
 		if(ret) {
 			printf("Read %d bytes to %s\n", ret, device_path);
+			printf("Length=%d, Offset=%d, Msg= <%s>\n", msg_size, offset, msg);
 		
 		} else {
 			printf("Read failed with return code:%i, for path:%s\n", ret, device_path);
+			printf("Length=%d, Offset=%d, Msg= <%s>\n", msg_size, offset, msg);
 			goto OUT;
 		}	
 		close(fd);
