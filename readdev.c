@@ -31,6 +31,11 @@ ssize_t readdev(struct file *filep, char __user *buf, size_t len, loff_t *ppos) 
 		printk(KERN_ERR "%s: ldev is NULL in %s()\n", __FILE__, __FUNCTION__);
 		goto OUT;
 	}
+	
+	/* Wait for some write using Blocking I/O  */
+	wait_event_interruptible(ldev->scull_queue, ldev->size > 0);
+
+
 	nctr = ncsr = cud_not_copy = noq= 0;
 	//if( len > ldev->size)
 	//	ncmr = ldev->size;

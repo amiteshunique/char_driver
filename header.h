@@ -5,6 +5,8 @@
 #include <linux/slab.h>
 #include <linux/string.h> 		/*For memset() */
 #include <linux/uaccess.h> 		/*For copy_from_user */
+#include <linux/sched.h> 		/*For TASK_INTERRUPTABLE def */
+#include <linux/wait.h> 		/*For wait_queue_head_t */
 
 extern int majorno, nod;
 extern dev_t dev;

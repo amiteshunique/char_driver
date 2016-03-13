@@ -70,6 +70,8 @@ static int __init init_function(void) {
 		cdev_init(&scull_devices[i].cdev, &fops);
 		scull_devices[i].cdev.owner = THIS_MODULE;
 		scull_devices[i].cdev.ops = &fops;
+		scull_devices[i].size = 0;
+		init_waitqueue_head(&scull_devices[i].scull_queue);
 		
 		dev_entry = MKDEV(majorno, minorno + i);
 		ret = cdev_add(&scull_devices[i].cdev, dev_entry, 1 );

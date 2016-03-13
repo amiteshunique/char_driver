@@ -9,6 +9,7 @@ struct scull_dev {
    int qset;                 /* total no of qsets in the device */
    unsigned long size;       /* amount of data stored here */
    struct cdev cdev;         /* Char device structure  */
+   wait_queue_head_t scull_queue; /* Wait queue for Blocking I/O implementation */
 };
 
 extern struct scull_dev *scull_devices;

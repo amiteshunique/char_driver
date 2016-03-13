@@ -128,6 +128,7 @@ ssize_t writedev(struct file *filep, const char __user *buf, size_t len, loff_t 
 	*ppos = ncsw;
 	printk(KERN_INFO "%s: filep->f_pos=%d  & ppos=%d  %s()\n", __FILE__,(int)filep->f_pos,(int) *ppos, __FUNCTION__);
 
+	wake_up_interruptible(&ldev->scull_queue);
 	printk(KERN_INFO "%s: In end of function %s() \n", __FILE__, __FUNCTION__);
 	return ncsw;
 
