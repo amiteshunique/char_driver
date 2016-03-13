@@ -30,15 +30,15 @@ RETRY:
 			printf("Problem while opening : /dev/scull_char_dev\n");
 			goto OUT;
 		}
-/*	
-		ret = lseek(fd, offset, SEEK_END);
+	
+		ret = lseek(fd, offset, SEEK_CUR);
 	
 		if(ret < 0)
 		{
 			printf("Problem with lseek: ret=%d \n",ret);
 			goto OUT;
 		}
-*/
+
 		ret = read(fd, msg, msg_size );
 	
 		if(ret) {
